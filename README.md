@@ -1,4 +1,4 @@
-🔗 ChainVerify: Blockchain Tabanlı Dijital Ürün Doğrulama ve Sahiplik Takip Sistemi
+🔗 ChainVerify: Blockchain Tabanlı Dijital Ürün Doğrulama ve Sahiplik Takip Sistemi hr
 📌 Proje Özeti
 ChainVerify, fiziksel ve dijital ürünlerin tedarik zincirindeki hareketlerini, orijinalliğini ve sahiplik geçmişini (history) şeffaf, değiştirilemez ve güvenli bir şekilde takip etmek için geliştirilmiş bir Web3 & IoT entegrasyonuna hazır doğrulama sistemidir. Özellikle ikinci el piyasasındaki güven sorununu ve sahteciliği önlemek amacıyla; her ürün bir NFT (ERC-721) mantığıyla blockchain'e kaydedilir. Sistem, son kullanıcıların kripto cüzdanı (MetaMask vb.) kullanmasına gerek kalmadan, Web2.5 mimarisiyle arka planda merkezi bir cüzdan üzerinden işlem yapmasına olanak tanır.
 
