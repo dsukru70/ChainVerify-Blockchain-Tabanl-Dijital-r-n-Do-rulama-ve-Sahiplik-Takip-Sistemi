@@ -1,0 +1,50 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_20-cd0b4a94bc99c22095ff3c3596bf95060540f884",
+  "solcVersion": "0.8.20",
+  "solcLongVersion": "0.8.20+commit.a1b79de6",
+  "compilerType": "solc",
+  "userSourceNameMap": {
+    "contracts/ProductTracking.sol": "project/contracts/ProductTracking.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "shanghai",
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode.linkReferences",
+            "evm.bytecode.object",
+            "evm.bytecode.opcodes",
+            "evm.bytecode.sourceMap",
+            "evm.deployedBytecode.immutableReferences",
+            "evm.deployedBytecode.linkReferences",
+            "evm.deployedBytecode.object",
+            "evm.deployedBytecode.opcodes",
+            "evm.deployedBytecode.sourceMap",
+            "evm.methodIdentifiers"
+          ]
+        }
+      },
+      "remappings": [
+        "project/:@openzeppelin/contracts/=npm/@openzeppelin/contracts@5.6.1/"
+      ]
+    },
+    "sources": {
+      "npm/@openzeppelin/contracts@5.6.1/access/Ownable.sol": {
+        "content": "// SPDX-License-Identifier: MIT\n// OpenZeppelin Contracts (last updated v5.0.0) (access/Ownable.sol)\n\npragma solidity ^0.8.20;\n\nimport {Context} from \"../utils/Context.sol\";\n\n/**\n * @dev Contract module which provides a basic access control mechanism, where\n * there is an account (an owner) that can be granted exclusive access to\n * specific functions.\n *\n * The initial owner is set to the address provided by the deployer. This can\n * later be changed with {transferOwnership}.\n *\n * This module is used through inheritance. It will make available the modifier\n * `onlyOwner`, which can be applied to your functions to restrict their use to\n * the owner.\n */\nabstract contract Ownable is Context {\n    address private _owner;\n\n    /**\n     * @dev The caller account is not authorized to perform an operation.\n     */\n    error OwnableUnauthorizedAccount(address account);\n\n    /**\n     * @dev The owner is not a valid owner account. (eg. `address(0)`)\n     */\n    error OwnableInvalidOwner(address owner);\n\n    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);\n\n    /**\n     * @dev Initializes the contract setting the address provided by the deployer as the initial owner.\n     */\n    constructor(address initialOwner) {\n        if (initialOwner == address(0)) {\n            revert OwnableInvalidOwner(address(0));\n        }\n        _transferOwnership(initialOwner);\n    }\n\n    /**\n     * @dev Throws if called by any account other than the owner.\n     */\n    modifier onlyOwner() {\n        _checkOwner();\n        _;\n    }\n\n    /**\n     * @dev Returns the address of the current owner.\n     */\n    function owner() public view virtual returns (address) {\n        return _owner;\n    }\n\n    /**\n     * @dev Throws if the sender is not the owner.\n     */\n    function _checkOwner() internal view virtual {\n        if (owner() != _msgSender()) {\n            revert OwnableUnauthorizedAccount(_msgSender());\n        }\n    }\n\n    /**\n     * @dev Leaves the contract without owner. It will not be possible to call\n     * `onlyOwner` functions. Can only be called by the current owner.\n     *\n     * NOTE: Renouncing ownership will leave the contract without an owner,\n     * thereby disabling any functionality that is only available to the owner.\n     */\n    function renounceOwnership() public virtual onlyOwner {\n        _transferOwnership(address(0));\n    }\n\n    /**\n     * @dev Transfers ownership of the contract to a new account (`newOwner`).\n     * Can only be called by the current owner.\n     */\n    function transferOwnership(address newOwner) public virtual onlyOwner {\n        if (newOwner == address(0)) {\n            revert OwnableInvalidOwner(address(0));\n        }\n        _transferOwnership(newOwner);\n    }\n\n    /**\n     * @dev Transfers ownership of the contract to a new account (`newOwner`).\n     * Internal function without access restriction.\n     */\n    function _transferOwnership(address newOwner) internal virtual {\n        address oldOwner = _owner;\n        _owner = newOwner;\n        emit OwnershipTransferred(oldOwner, newOwner);\n    }\n}\n"
+      },
+      "npm/@openzeppelin/contracts@5.6.1/utils/Context.sol": {
+        "content": "// SPDX-License-Identifier: MIT\n// OpenZeppelin Contracts (last updated v5.0.1) (utils/Context.sol)\n\npragma solidity ^0.8.20;\n\n/**\n * @dev Provides information about the current execution context, including the\n * sender of the transaction and its data. While these are generally available\n * via msg.sender and msg.data, they should not be accessed in such a direct\n * manner, since when dealing with meta-transactions the account sending and\n * paying for execution may not be the actual sender (as far as an application\n * is concerned).\n *\n * This contract is only required for intermediate, library-like contracts.\n */\nabstract contract Context {\n    function _msgSender() internal view virtual returns (address) {\n        return msg.sender;\n    }\n\n    function _msgData() internal view virtual returns (bytes calldata) {\n        return msg.data;\n    }\n\n    function _contextSuffixLength() internal view virtual returns (uint256) {\n        return 0;\n    }\n}\n"
+      },
+      "project/contracts/ProductTracking.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.20;\n\nimport \"@openzeppelin/contracts/access/Ownable.sol\";\n\ncontract ProductTracking is Ownable {\n    struct Product {\n        string manufacturer;\n        string model;\n        uint256 timestamp;\n        address currentOwner;\n        bool isMinted;\n    }\n\n    // Ürün seri numarası veya benzersiz ID ile ürün verisini eşleştirir\n    mapping(string => Product) public products;\n\n    // Log (Olay) kayıtları\n    event ProductMinted(string productId, string manufacturer, string model, address initialOwner);\n    event ProductTransferred(string productId, address oldOwner, address newOwner);\n\n    // Başlangıçta kontratı kuranı \"owner\" olarak ayarla\n    constructor() Ownable(msg.sender) {}\n\n    // Yeni ürün ekleme (Sadece yönetici/backend Private Key'i çalıştırabilir)\n    function addProduct(string memory _productId, string memory _manufacturer, string memory _model) public onlyOwner {\n        require(!products[_productId].isMinted, \"Product with this ID already exists!\");\n\n        products[_productId] = Product({\n            manufacturer: _manufacturer,\n            model: _model,\n            timestamp: block.timestamp,\n            currentOwner: msg.sender, // Başlangıç sahibi olarak üretici (backend cüzdanı) atanıyor\n            isMinted: true\n        });\n\n        emit ProductMinted(_productId, _manufacturer, _model, msg.sender);\n    }\n\n    // Ürünün varlığını ve orijinalliğini doğrulama\n    function verifyProduct(string memory _productId) public view returns (\n        bool exists, \n        string memory manufacturer, \n        string memory model, \n        uint256 timestamp, \n        address currentOwner\n    ) {\n        Product memory p = products[_productId];\n        if (!p.isMinted) {\n            return (false, \"\", \"\", 0, address(0));\n        }\n        return (true, p.manufacturer, p.model, p.timestamp, p.currentOwner);\n    }\n\n    // Ürün sahipliğini devretme süreci (şimdilik opsiyonel kullanılabilir)\n    function transferOwnership(string memory _productId, address _newOwner) public {\n        require(products[_productId].isMinted, \"Product does not exist.\");\n        // Geliştirilmiş bir senaryoda bu kullanıcıların kendi MetaMask cüzdanlarıyla yönetilebilir\n        // Ancak bu aşamada admin veya mevcut sahip devredebilir şeklinde kurgulanabilir.\n        require(products[_productId].currentOwner == msg.sender || msg.sender == owner(), \"Not authorized to transfer.\");\n\n        address oldOwner = products[_productId].currentOwner;\n        products[_productId].currentOwner = _newOwner;\n\n        emit ProductTransferred(_productId, oldOwner, _newOwner);\n    }\n}\n"
+      }
+    }
+  }
+}
